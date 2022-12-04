@@ -1,1 +1,1 @@
-# english-words
+# english-dict
