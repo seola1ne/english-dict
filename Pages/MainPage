@@ -1,0 +1,13 @@
+#include <stdio.h>
+
+void mainMenu() {
+    printf("---------------------------------------\n");
+    printf("\t     'C'lass Card");
+}
+
+int main() {
+
+    mainMenu();
+
+    return 0;
+}
