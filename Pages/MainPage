@@ -1,13 +1,61 @@
 #include <stdio.h>
+#include <windows.h>
+
+#define Left 0 // 왼쪽 방향키(75)
+#define Right 1 // 오른쪽 방향키(77)
+#define Submit 4 // 선택(스페이스바)
+
+int KeyControl();
+void init();
+void mainMenu();
+void gotoxy(int, int);
+
+void init() {
+    system("mode con cols=56 lines=20 | title 'C'lass card");
+}
+
+void titleDraw() {
+    printf("\n\n\n\n");
+    printf("            'C'lass Card     \n\n");
+    printf("    ------------------------------\n");
+}
 
 void mainMenu() {
-    printf("---------------------------------------\n");
-    printf("\t     'C'lass Card");
+    gotoxy(13-2, 8);
+    printf("> 영단어 조회");
+    gotoxy(13, 9);
+    printf("영단어 추가");
+    gotoxy(13, 10);
+    printf("영단어 삭제");
+    gotoxy(13, 11);
+    printf(" 모의 시험 ");
+}
+
+void gotoxy(int x, int y) {
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD pos;
+    pos.X = x;
+    pos.Y = y;
+    SetConsoleCursorPosition(consoleHandle, pos);
+}
+
+int KeyControl() {
+    char temp = getch();
+
+    if(temp == 75) {
+        return Left;
+    }
+    else if(temp == 77) {
+        return Right;
+    }
+    else if(temp == ' ') {
+        return Submit;
+    }
 }
 
 int main() {
-
+    // init();
+    titleDraw();
     mainMenu();
-
     return 0;
 }
