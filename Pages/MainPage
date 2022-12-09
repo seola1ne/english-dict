@@ -4,15 +4,19 @@
 
 #define Left 75 // 왼쪽 방향키(75)
 #define Right 77 // 오른쪽 방향키(77)
-#define UP 72 // 위쪽 방향키(72)
-#define DOWN 80 // 아래쪽 방향키(80)
+#define Up 72 // 위쪽 방향키(72)
+#define Down 80 // 아래쪽 방향키(80)
 #define Submit 4 // 선택(스페이스바)
 
-int KeyControl();
-void init();
-void mainMenu();
-void gotoxy(int, int);
-void textColor(int);
+/*
+typedef struct WordsQueue { // 단어를 저장할 큐 구조체
+    int wordKey;
+    char word[20];
+    char mean[20];
+    WordsQueue* front;
+    WordsQueue* rear;
+} WordsQueue;
+*/
 
 enum ColorType {
     BLACK,  	//0
@@ -33,19 +37,24 @@ enum ColorType {
     WHITE		//15
 } COLOR;
 
-void textColor(int colorNum) { // 글자 색 변경 함수
+void textColor(int colorNum) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorNum);
 }
 
-void init() { // 콘솔창 크기 초기화 함수
-    system("mode con cols=56 lines=20 | title 'C'lass card");
+int KeyControl();
+void init();
+void mainMenu();
+void gotoxy(int, int);
+
+void init() {
+    system("mode con cols=56 lines=20 | title BSSM Class Card");
 }
 
-void titleDraw() { // 타이틀 출력 함수
+void titleDraw() {
     printf("\n\n\n\n");
 
     textColor(SkyBlue);
-    printf("                    C");
+    printf("                      C");
     textColor(WHITE);
     printf("LASS ");
     textColor(SkyBlue);
@@ -53,11 +62,11 @@ void titleDraw() { // 타이틀 출력 함수
     textColor(WHITE);
     printf("ARD     \n\n\n");
 
-    printf("  -------------------------------------------------\n\n");
+    printf("   -------------------------------------------------\n\n");
 }
 
-void mainMenu() { // 메인 화면의 메뉴를 보이고 선택할 수 있게끔 하는 함수
-    int x = 6, y = 10;
+void mainMenu() {
+    int x = 7, y = 10;
 
     gotoxy(x, y);
     printf("> 조회");
@@ -70,17 +79,11 @@ void mainMenu() { // 메인 화면의 메뉴를 보이고 선택할 수 있게�
     gotoxy(x+34, y);
     printf("  랭킹   ");
 
-    while(1) {
-        int input = KeyControl(); // 사용자로부터 방향키/스페이스바 입력받음
-        switch(input) {
-            case Submit: {
-                return y-8;
-            }
-        }
-    }
+    KeyControl();
+
 }
 
-void gotoxy(int x, int y) { // 커서 조정 함수
+void gotoxy(int x, int y) {
     HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD pos;
     pos.X = x;
@@ -88,23 +91,53 @@ void gotoxy(int x, int y) { // 커서 조정 함수
     SetConsoleCursorPosition(consoleHandle, pos);
 }
 
-int KeyControl() { // 사용자 키 입력받아 해당 값 반환하는 함수
-    char temp = _getch();
+int KeyControl() {
+    // 방향키는 특수 키로 인식, 입력이 두 개의 수로 들어감
+    // 두 번 읽어야 방향키 인식 가능, 그래서_getch() 함수를 두 번 가져옴
+    // char의 범위는 -128~127이므로 _getch()에는 224가 아닌 -32가 저장됨
 
-    if(temp == 75) {
-        return Left;
+    /*
+        Left(←) : 224 75
+        Right(→) : 224 77
+        Up(↑) : 224 72
+        Down : 224 80
+    */
+
+    char temp;
+
+    while(1) {
+        if(_kbhit()) { // 키보드 눌렀을 시 if문 실행
+            temp = _getch(); // 방향키가 입력됐을 때 224 00이 버퍼에 있음, 224부터 빼줌
+
+            if(temp == -32) { // 224(= -32)를 받았다면
+                temp = _getch(); // 뒤의 두 자리를 받는다
+                 switch(temp) {
+                    case Left:
+                        printf("좌 ");
+                        break;
+                    case Right:
+                        printf("우 ");
+                        break;
+                    case Up:
+                        printf("위 ");
+                        break;
+                    case Down:
+                        printf("아래 ");
+                        break;
+                 }
+            }
+
+            else if(temp == ' '){
+                printf("스페이스바 ");
+            }
+        }
     }
-    else if(temp == 77) {
-        return Right;
-    }
-    else if(temp == ' ') {
-        return Submit;
-    }
+
 
 }
 
 int main() {
-    // init();
+    init();
     titleDraw();
     mainMenu();
     return 0;
