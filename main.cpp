@@ -9,6 +9,12 @@
 
 using namespace std;
 
+typedef struct ExamQueue {
+    int front;
+    int rear;
+
+} ExamQueue;
+
 char EngS[10000][100]; // 단어장 (RAM), 최대 1만개, 길이는 100
 char KorS[10000][100]; // 단어장 (RAM), 최대 1만개, 길이는 100
 
