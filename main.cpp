@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <conio.h>
 #define MAX 100
+#define MaxSize 10000
 
 using namespace std;
 
@@ -13,6 +14,81 @@ char EngS[10000][100]; // 단어장 (RAM), 최대 1만개, 길이는 100
 char KorS[10000][100]; // 단어장 (RAM), 최대 1만개, 길이는 100
 
 int total; // 총 단어의 개수
+
+// -------- 영어 단어 시험 큐 구현 ---------
+
+typedef struct ExamQueue { // 시험 단어를 저장할 큐
+    int front; // 삭제 위치를 가리킴
+    int rear; // 삽입 위치를 가리킴
+    int WordData[10000]; // 출제할 영어 단어의 위치를 저장할 배열
+} ExamQueue;
+
+void initQueue(ExamQueue*);
+void ExamSetting();
+void StartExam(ExamQueue*);
+
+void initQueue(ExamQueue* test) { // 큐 초기화
+    test->front = -1;
+    test->rear = -1;
+}
+
+void ExamSetting() { // 큐 초기 세팅
+    ExamQueue test;
+    initQueue(&test);
+
+    for(int i = 0; i < total; i++) {
+        test.WordData[i] = (rand() % total) + i; // 영어 단어 배열의 인덱스를 랜덤으로 섞어서 큐의 WordData 배열에 저장
+    }
+
+    test.rear = total-1;
+
+    StartExam(&test);
+}
+
+void StartExam(ExamQueue* test) {
+    int i = 0;
+    int WordIndex; // 문제를 낼 단어의 인덱스를 저장하는 변수
+    char userAnswer[100]; // 사용자가 적은 답을 저장할 문자열
+    int wrongCount = 0;
+
+    while(test->front != test->rear) { // WordData 배열이 공백이 아닐 동안
+        WordIndex = test->WordData[i]; // 문제를 낼 단어 인덱스를 test->WordData 배열의 i번째 값으로 저장
+
+        printf("%d번째 단어 : %s\n", i++, KorS[WordIndex]);
+        printf("해당 단어를 영어로 하면 ? : ");
+        fgets(userAnswer, 100, stdin);
+
+        if(strcmp(userAnswer, EngS[WordIndex]) == 0) { // 사용자 답과 정답 비교
+            printf("\n정답!\n\n");
+            test->front++; // 맞춘 단어는 삭제
+        }
+
+        else { // 정답이 아니면
+            printf("\n오답!\n\n");
+
+            test->WordData[test->rear+1] = WordIndex; // 틀린 단어 인덱스를 WordData 배열의 마지막에 삽입
+            test->rear += 1;
+
+            test->front++; // 해당 단어 건너뜀(앞에서 삭제)
+            wrongCount++; // 틀린 횟수 추가
+        }
+    }
+
+    printf("총 틀린 횟수는 %d번입니다. \n", wrongCount);
+}
+
+
+/*
+int isFull(ExamQueue *test) { // 큐 포화 여부 판단
+    return test->rear == MaxSize-1;
+}
+
+int isEmpty(ExamQueue *test) { // 큐 공백 여부 판단
+    return test->rear == test->front;
+}
+*/
+
+// ------------------------------
 
 int compareString(const void *a, const void *b){
     return(strcmp((char*)a,(char*)b));
@@ -296,7 +372,7 @@ void mainmenu()
                 if(key==13)
                 {
                     if(point==0) dictionary_mainmenu();
-                    // if(point==1) test();
+                    if(point==1) ExamSetting();
                     if(point==2) break;
                 }
             }
