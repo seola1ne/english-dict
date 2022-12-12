@@ -1,12 +1,20 @@
 # depslib dependency file v1.0
+<<<<<<< HEAD
 1670801016 source:c:\users\user\desktop\c_program\프젝\pj\main.cpp
+=======
+1670763848 source:c:\users\user\desktop\c_program\프젝\pj\main.cpp
+>>>>>>> 25e568fe7fe6145e0710f01a6b435bfd5d75f140
 	<cstdio>
 	<iostream>
 	<windows.h>
 	<stdlib.h>
 	<conio.h>
 
+<<<<<<< HEAD
 1670844159 source:c:\users\user\desktop\english-dict\main.cpp
+=======
+1670833339 source:c:\users\user\desktop\english-dict\main.cpp
+>>>>>>> 25e568fe7fe6145e0710f01a6b435bfd5d75f140
 	<cstdio>
 	<iostream>
 	<windows.h>

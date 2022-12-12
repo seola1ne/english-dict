@@ -1,0 +1,144 @@
+#include <stdio.h>
+#include <windows.h>
+#include <conio.h>
+
+#define Left 75 // 왼쪽 방향키(75)
+#define Right 77 // 오른쪽 방향키(77)
+#define Up 72 // 위쪽 방향키(72)
+#define Down 80 // 아래쪽 방향키(80)
+#define Submit 4 // 선택(스페이스바)
+
+/*
+typedef struct WordsQueue { // 단어를 저장할 큐 구조체
+    int wordKey;
+    char word[20];
+    char mean[20];
+    WordsQueue* front;
+    WordsQueue* rear;
+} WordsQueue;
+*/
+
+enum ColorType {
+    BLACK,  	//0
+    darkBLUE,	//1
+    DarkGreen,	//2
+    darkSkyBlue,    //3
+    DarkRed,  	//4
+    DarkPurple,	//5
+    DarkYellow,	//6
+    GRAY,		//7
+    DarkGray,	//8
+    BLUE,		//9
+    GREEN,		//10
+    SkyBlue,	//11
+    RED,		//12
+    PURPLE,		//13
+    YELLOW,		//14
+    WHITE		//15
+} COLOR;
+
+void textColor(int colorNum) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorNum);
+}
+
+int KeyControl();
+void init();
+void mainMenu();
+void gotoxy(int, int);
+
+void init() {
+    system("mode con cols=56 lines=20 | title BSSM Class Card");
+}
+
+void titleDraw() {
+    printf("\n\n\n\n");
+
+    textColor(SkyBlue);
+    printf("                      C");
+    textColor(WHITE);
+    printf("LASS ");
+    textColor(SkyBlue);
+    printf("C");
+    textColor(WHITE);
+    printf("ARD     \n\n\n");
+
+    printf("   -------------------------------------------------\n\n");
+}
+
+void mainMenu() {
+    int x = 7, y = 10;
+
+    gotoxy(x, y);
+    printf("> 조회");
+    gotoxy(x+10, y);
+    printf("추가");
+    gotoxy(x+18, y);
+    printf("삭제");
+    gotoxy(x+26, y);
+    printf("테스트");
+    gotoxy(x+34, y);
+    printf("  랭킹   ");
+
+    KeyControl();
+
+}
+
+void gotoxy(int x, int y) {
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD pos;
+    pos.X = x;
+    pos.Y = y;
+    SetConsoleCursorPosition(consoleHandle, pos);
+}
+
+int KeyControl() {
+    // 방향키는 특수 키로 인식, 입력이 두 개의 수로 들어감
+    // 두 번 읽어야 방향키 인식 가능, 그래서_getch() 함수를 두 번 가져옴
+    // char의 범위는 -128~127이므로 _getch()에는 224가 아닌 -32가 저장됨
+
+    /*
+        Left(←) : 224 75
+        Right(→) : 224 77
+        Up(↑) : 224 72
+        Down : 224 80
+    */
+
+    char temp;
+
+    while(1) {
+        if(_kbhit()) { // 키보드 눌렀을 시 if문 실행
+            temp = _getch(); // 방향키가 입력됐을 때 224 00이 버퍼에 있음, 224부터 빼줌
+
+            if(temp == -32) { // 224(= -32)를 받았다면
+                temp = _getch(); // 뒤의 두 자리를 받는다
+                 switch(temp) {
+                    case Left:
+                        printf("좌 ");
+                        break;
+                    case Right:
+                        printf("우 ");
+                        break;
+                    case Up:
+                        printf("위 ");
+                        break;
+                    case Down:
+                        printf("아래 ");
+                        break;
+                 }
+            }
+
+            else if(temp == ' '){
+                printf("스페이스바 ");
+            }
+        }
+    }
+
+
+}
+
+int main() {
+    init();
+    titleDraw();
+    mainMenu();
+    return 0;
+}

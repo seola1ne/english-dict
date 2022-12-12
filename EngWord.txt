@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 ant
 cat
 banana
+=======
+canada
+>>>>>>> 25e568fe7fe6145e0710f01a6b435bfd5d75f140
